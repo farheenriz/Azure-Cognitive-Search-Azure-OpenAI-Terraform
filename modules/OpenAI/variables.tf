@@ -10,6 +10,7 @@ variable "resource_group_name" {
 
 variable "location" {
   type        = string
+  default     = "australiaeast"
   description = "Location for the Azure Cognitive Services instance."
 }
 

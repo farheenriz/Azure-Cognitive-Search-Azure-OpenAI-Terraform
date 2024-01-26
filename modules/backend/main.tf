@@ -1,34 +1,109 @@
+resource "random_string" "value" {
+  length  = 4
+  upper   = false
+  lower   = true
+  special = false
+}
+
+locals {
+  unique_string = substr(md5(random_string.value.result), 0, 8)
+}
+
+locals {
+  appID = var.appID
+}
+
+locals {
+  appPassword = var.appPassword
+}
+
+locals {
+  blobSASToken = var.blobSASToken
+}
+
+locals {
+  resourceGroupSearch = var.resource_group_name
+}
+
+locals {
+  azureSearchName = var.azureSearchName
+}
+
+locals {
+  azureOpenAIName = var.azureOpenAIName
+}
+
+locals {
+  azureOpenAIAPIKey = var.azureOpenAIAPIKey
+}
+
+locals {
+  bingSearchName = var.bingSearchName
+}
+
+locals {
+  SQLServerName = var.SQLServerName
+}
+
+locals {
+  SQLServerUsername = var.SQLServerUsername
+}
+
+locals {
+  SQLServerPassword = var.SQLServerPassword
+}
+
+locals {
+  cosmosDBAccountName = var.cosmosDBAccountName
+}
+
+locals {
+  cosmosDBContainerName = var.cosmosDBContainerName
+}
+
+locals {
+  botId = "BotID-${local.unique_string}"
+}
+
+locals {
+  appServicePlanName = "AppServicePlan-backend-${local.unique_string}"
+}
+
+locals {
+  location = var.location
+}
+
 resource "azurerm_resource_group_template_deployment" "botapp" {
   name                = "bot-template"
   resource_group_name = var.resource_group_name
   deployment_mode     = "Incremental"
   parameters_content = jsonencode({
     "appId": {
-      "value": "e461c789-8aa4-41e1-b6c6-20f35eeb5bb6"
+      "value": local.appID
     },
     "appPassword": {
-      "value": "yew8Q~AJhebbUQqP8hGzqTs2im_ZFJ8Ctanxybv2"
+      "value": local.appPassword
     },
     "blobSASToken": {
-      "value": "?sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2024-01-20T04:16:37Z&st=2024-01-19T20:16:37Z&spr=https&sig=4b01xR%2FSraOqmEFyEDKVt%2BcDblH0tX2YGDVJGm7Rz6w%3D"
+      "value": local.blobSASToken
     },
     "resourceGroupSearch": {
-      "value": "[resourceGroup().name]"
+      "value": local.resourceGroupSearch
     },
     "azureSearchName": {
-      "value": null
+      "value": local.azureSearchName
     },
     "azureSearchAPIVersion": {
       "value": "2023-07-01-Preview"
     },
     "azureOpenAIName": {
-      "value": null
+      "value": local.azureOpenAIName
     },
     "azureOpenAIAPIKey": {
-      "value": null
+      "value": local.azureOpenAIAPIKey
     },
     "azureOpenAIModelName": {
-      "value": "gpt-4-32k"
+      //"value": "gpt-4-32k"
     },
     "azureOpenAIAPIVersion": {
       "value": "2023-05-15"
@@ -37,40 +112,40 @@ resource "azurerm_resource_group_template_deployment" "botapp" {
       "value": "https://api.bing.microsoft.com/v7.0/search"
     },
     "bingSearchName": {
-      "value": null
+      "value": local.bingSearchName
     },
     "SQLServerName": {
-      "value": null
+      "value": local.SQLServerName
     },
     "SQLServerDatabase": {
       "value": "SampleDB"
     },
     "SQLServerUsername": {
-      "value": null
+      "value": local.SQLServerUsername
     },
     "SQLServerPassword": {
-      "value": null
+      "value": local.SQLServerPassword
     },
     "cosmosDBAccountName": {
-      "value": null
+      "value": local.cosmosDBAccountName
     },
     "cosmosDBContainerName": {
-      "value": null
+      "value": local.cosmosDBContainerName
     },
     "botId": {
-      "value": "[format('BotId-{0}', uniqueString(resourceGroup().id))]"
+      "value": local.botId
     },
     "botSKU": {
       "value": "F0"
     },
     "appServicePlanName": {
-      "value": "[format('AppServicePlan-Backend-{0}', uniqueString(resourceGroup().id))]"
+      "value": local.appServicePlanName
     },
     "appServicePlanSKU": {
       "value": "S3"
     },
     "location": {
-      "value": "[resourceGroup().location]"
+      "value": local.location
     }
   })
   template_content = <<TEMPLATE
@@ -479,6 +554,7 @@ resource "azurerm_resource_group_template_deployment" "botapp" {
       "type": "string",
       "value": "[parameters('botId')]"
     },
+  
     "webAppName": {
       "type": "string",
       "value": "[variables('webAppName')]"

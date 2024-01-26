@@ -3,5 +3,17 @@ variable "resource_group_name" {
 }
 
 variable "location" {
-    description = "existing resouce group location"
+    
 }
+
+variable "botDirectLineChannelKey" {}
+
+variable "botServiceName" {}
+
+variable "blobSASToken" {}
+
+variable "azureSearchName" {}
+
+variable "azureOpenAIName" {}
+
+variable "azureOpenAIAPIKey" {}

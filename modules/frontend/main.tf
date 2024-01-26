@@ -1,49 +1,100 @@
+resource "random_string" "value" {
+  length  = 4
+  upper   = false
+  lower   = true
+  special = false
+}
+
+locals {
+  unique_string = substr(md5(random_string.value.result), 0, 8)
+}
+
+locals {
+  webAppName = "Web-App-${local.unique_string}"
+}
+
+locals {
+  location = var.location
+}
+
+locals {
+  appServicePlanName = "AppServicePlan-frontend-${local.unique_string}"
+}
+
+locals {
+  botServiceName = var.botServiceName
+}
+
+locals {
+  botDirectLineChannelKey = var.botDirectLineChannelKey
+}
+
+locals {
+  blobSASToken = var.blobSASToken
+}
+
+locals {
+  resourceGroupSearch = var.resource_group_name
+}
+
+locals {
+  azureSearchName = var.azureSearchName
+}
+
+locals {
+  azureOpenAIName = var.azureOpenAIName
+}
+
+locals {
+  azureOpenAIAPIKey = var.azureOpenAIAPIKey
+}
+
 resource "azurerm_resource_group_template_deployment" "frontend" {
   name                = "frontend-template"
   resource_group_name = var.resource_group_name
   deployment_mode     = "Incremental"
   parameters_content = jsonencode({
     "webAppName": {
-      "value": "[format('webApp-Frontend-{0}', uniqueString(resourceGroup().id))]"
+      "value": local.webAppName
     },
     "appServicePlanSKU": {
       "value": "S3"
     },
     "appServicePlanName": {
-      "value": "[format('AppServicePlan-Frontend-{0}', uniqueString(resourceGroup().id))]"
+      "value": local.appServicePlanName
     },
     "botServiceName": {
-      "value": null
+      "value": local.botServiceName
     },
     "botDirectLineChannelKey": {
-      "value": null
+      "value": local.botDirectLineChannelKey
     },
     "blobSASToken": {
-      "value": null
+      "value": local.blobSASToken
     },
     "resourceGroupSearch": {
-      "value": "[resourceGroup().name]"
+      "value": local.resourceGroupSearch
     },
     "azureSearchName": {
-      "value": null
+      "value": local.azureSearchName
     },
     "azureSearchAPIVersion": {
       "value": "2023-07-01-Preview"
     },
     "azureOpenAIName": {
-      "value": null
+      "value": local.azureOpenAIName
     },
     "azureOpenAIAPIKey": {
-      "value": null
+      "value": local.azureOpenAIAPIKey
     },
     "azureOpenAIModelName": {
-      "value": "gpt-4-32k"
+    //"value": "gpt-4-32k"
     },
     "azureOpenAIAPIVersion": {
       "value": "2023-05-15"
     },
     "location": {
-      "value": "[resourceGroup().location]"
+      "value": local.location
     }
   })
   template_content = <<TEMPLATE

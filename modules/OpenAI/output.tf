@@ -15,6 +15,6 @@ output "openai_endpoint" {
   value       = azurerm_cognitive_account.account.endpoint
 }
 
-output "name" {
+output "openai_name" {
   value = azurerm_cognitive_account.account.name
 }
